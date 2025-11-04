@@ -1,0 +1,422 @@
+/* ========================================
+   グローバル設定
+   ======================================== */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f7fa;
+}
+
+/* ========================================
+   ヘッダー
+   ======================================== */
+.app-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.app-subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* ========================================
+   メインコンテンツ
+   ======================================== */
+.app-main {
+  flex: 1;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.section {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #2d3748;
+}
+
+/* ========================================
+   通知バナー
+   ======================================== */
+.notification-banner {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.notification-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-content h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  color: #744210;
+}
+
+.notification-content p {
+  margin: 0 0 0.5rem;
+  color: #744210;
+}
+
+.notification-items {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+
+.notification-items li {
+  font-size: 0.9rem;
+  color: #744210;
+  padding: 0.2rem 0;
+}
+
+.notification-items .more-items {
+  font-style: italic;
+}
+
+/* ========================================
+   食品リスト
+   ======================================== */
+.food-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.food-item {
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: all 0.2s;
+}
+
+.food-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 期限までの日数による色分け */
+.food-item-expired {
+  border-color: #cbd5e0;
+  background: #f7fafc;
+}
+
+.food-item-danger {
+  border-color: #fc8181;
+  background: #fff5f5;
+}
+
+.food-item-warning {
+  border-color: #f6ad55;
+  background: #fffaf0;
+}
+
+.food-item-normal {
+  border-color: #68d391;
+  background: #f0fff4;
+}
+
+.food-item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.food-item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.food-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.expiry-badge {
+  display: inline-block;
+  background: #667eea;
+  color: white;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.food-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.expiry-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.expiry-date {
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+.days-remaining {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.days-expired {
+  color: #718096;
+}
+
+.days-danger {
+  color: #e53e3e;
+}
+
+.days-warning {
+  color: #dd6b20;
+}
+
+.days-normal {
+  color: #38a169;
+}
+
+.food-memo {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #718096;
+  font-style: italic;
+}
+
+.food-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #718096;
+}
+
+.empty-state p {
+  margin: 0.5rem 0;
+}
+
+.empty-state-hint {
+  font-size: 0.9rem;
+}
+
+/* ========================================
+   フォーム
+   ======================================== */
+.food-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.9rem;
+}
+
+.required {
+  color: #e53e3e;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* ========================================
+   ボタン
+   ======================================== */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.btn-secondary:hover {
+  background: #cbd5e0;
+}
+
+.btn-edit {
+  background: #4299e1;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.btn-edit:hover {
+  background: #3182ce;
+}
+
+.btn-delete {
+  background: #fc8181;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.btn-delete:hover {
+  background: #f56565;
+}
+
+.btn-large {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+}
+
+/* ========================================
+   フッター
+   ======================================== */
+.app-footer {
+  background: #2d3748;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+.app-footer p {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* ========================================
+   ローディング
+   ======================================== */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.2rem;
+  color: #667eea;
+}
+
+/* ========================================
+   レスポンシブ対応（タブレット以上）
+   ======================================== */
+@media (min-width: 768px) {
+  .app-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .app-main {
+    padding: 2rem;
+  }
+
+  .section {
+    padding: 2rem;
+  }
+
+  .food-item-actions {
+    flex-direction: row;
+  }
+}
