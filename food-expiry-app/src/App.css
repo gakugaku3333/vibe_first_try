@@ -401,6 +401,219 @@
 }
 
 /* ========================================
+   OCR機能
+   ======================================== */
+.ocr-trigger {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.btn-ocr {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+}
+
+.btn-ocr:hover {
+  opacity: 0.9;
+}
+
+.ocr-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.form-divider {
+  text-align: center;
+  margin: 1.5rem 0;
+  position: relative;
+  color: #a0aec0;
+  font-size: 0.9rem;
+}
+
+.form-divider::before,
+.form-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.form-divider::before {
+  left: 0;
+}
+
+.form-divider::after {
+  right: 0;
+}
+
+/* OCRモーダル */
+.ocr-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.ocr-modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* OCRスキャナー */
+.ocr-scanner {
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.ocr-scanner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.ocr-scanner-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #2d3748;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #718096;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+}
+
+.btn-close:hover {
+  color: #2d3748;
+}
+
+.ocr-scanner-body {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ocr-instructions {
+  text-align: center;
+  color: #4a5568;
+}
+
+.ocr-instructions p {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+}
+
+.ocr-instructions ul {
+  text-align: left;
+  display: inline-block;
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.ocr-instructions li {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.ocr-preview {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.ocr-preview img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ocr-progress {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s ease;
+}
+
+.ocr-progress p {
+  margin: 0;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.ocr-debug {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.ocr-debug summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.ocr-debug pre {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: #2d3748;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.ocr-scanner-actions {
+  padding: 1.5rem;
+  border-top: 2px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ========================================
    レスポンシブ対応（タブレット以上）
    ======================================== */
 @media (min-width: 768px) {
@@ -417,6 +630,10 @@
   }
 
   .food-item-actions {
+    flex-direction: row;
+  }
+
+  .ocr-scanner-actions {
     flex-direction: row;
   }
 }

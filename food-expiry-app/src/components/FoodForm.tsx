@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { FoodItemInput, ExpiryType } from '../types';
 import { getTodayString } from '../utils/dateUtils';
+import { OCRScanner } from './OCRScanner';
 
 interface FoodFormProps {
   /** 編集モードの場合、初期値を設定 */
@@ -26,6 +27,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
   const [expiryType, setExpiryType] = useState<ExpiryType>('賞味期限');
   const [expiryDate, setExpiryDate] = useState(getTodayString());
   const [memo, setMemo] = useState('');
+  const [showOCRScanner, setShowOCRScanner] = useState(false);
 
   // 初期データがある場合（編集モード）、フォームに反映
   useEffect(() => {
@@ -66,21 +68,68 @@ export const FoodForm: React.FC<FoodFormProps> = ({
     }
   };
 
+  const handleOCRResult = (result: {
+    date: string | null;
+    expiryType: ExpiryType | null;
+    rawText: string;
+  }) => {
+    // 日付が検出された場合
+    if (result.date) {
+      setExpiryDate(result.date);
+      alert(`期限日を自動入力しました: ${result.date}`);
+    } else {
+      alert('期限日を検出できませんでした。手動で入力してください。');
+    }
+
+    // 期限の種類が検出された場合
+    if (result.expiryType) {
+      setExpiryType(result.expiryType);
+    }
+
+    setShowOCRScanner(false);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="food-form">
-      <div className="form-group">
-        <label htmlFor="name">
-          食品名 <span className="required">*</span>
-        </label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="例: 牛乳"
-          required
-        />
-      </div>
+    <>
+      {showOCRScanner && (
+        <div className="ocr-modal">
+          <div className="ocr-modal-content">
+            <OCRScanner
+              onResult={handleOCRResult}
+              onClose={() => setShowOCRScanner(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="food-form">
+        {/* OCRスキャナー起動ボタン */}
+        <div className="ocr-trigger">
+          <button
+            type="button"
+            className="btn btn-ocr"
+            onClick={() => setShowOCRScanner(true)}
+          >
+            📷 ラベルを撮影して自動入力
+          </button>
+          <p className="ocr-hint">期限日と期限の種類を自動で読み取ります</p>
+        </div>
+
+        <div className="form-divider">または手動で入力</div>
+
+        <div className="form-group">
+          <label htmlFor="name">
+            食品名 <span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="例: 牛乳"
+            required
+          />
+        </div>
 
       <div className="form-group">
         <label htmlFor="expiryType">
@@ -132,5 +181,6 @@ export const FoodForm: React.FC<FoodFormProps> = ({
         )}
       </div>
     </form>
+    </>
   );
 };
