@@ -1,29 +1,69 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import type { User } from 'firebase/auth';
 import type { FoodItem, FoodItemInput } from './types';
-import { useFoodItems } from './hooks/useFoodItems';
+import { auth } from './lib/firebase';
+import { useFoodItemsFirestore } from './hooks/useFoodItemsFirestore';
+import { Auth } from './components/Auth';
+import { GroupSettings } from './components/GroupSettings';
 import { FoodForm } from './components/FoodForm';
 import { FoodList } from './components/FoodList';
 import { NotificationBanner } from './components/NotificationBanner';
 import './App.css';
 
+const GROUP_ID_KEY = 'food-app-group-id';
+
 function App() {
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [groupId, setGroupId] = useState<string>(() => {
+    return localStorage.getItem(GROUP_ID_KEY) || 'default';
+  });
+
   const { items, loading, addItem, updateItem, deleteItem, getExpiringItems } =
-    useFoodItems();
+    useFoodItemsFirestore(user, groupId);
+
   const [editingItem, setEditingItem] = useState<FoodItem | null>(null);
   const [showForm, setShowForm] = useState(false);
+
+  // 認証状態の監視
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setAuthLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // グループIDの保存
+  const handleGroupIdChange = (newGroupId: string) => {
+    setGroupId(newGroupId);
+    localStorage.setItem(GROUP_ID_KEY, newGroupId);
+  };
 
   // 7日以内に期限が来る食品を取得
   const expiringItems = getExpiringItems(7);
 
-  const handleAdd = (data: FoodItemInput) => {
-    addItem(data);
-    setShowForm(false);
+  const handleAdd = async (data: FoodItemInput) => {
+    try {
+      await addItem(data);
+      setShowForm(false);
+    } catch (error) {
+      console.error('追加エラー:', error);
+      alert('食品の追加に失敗しました');
+    }
   };
 
-  const handleUpdate = (data: FoodItemInput) => {
+  const handleUpdate = async (data: FoodItemInput) => {
     if (editingItem) {
-      updateItem(editingItem.id, data);
-      setEditingItem(null);
+      try {
+        await updateItem(editingItem.id, data);
+        setEditingItem(null);
+      } catch (error) {
+        console.error('更新エラー:', error);
+        alert('食品の更新に失敗しました');
+      }
     }
   };
 
@@ -36,10 +76,42 @@ function App() {
     setEditingItem(null);
   };
 
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteItem(id);
+    } catch (error) {
+      console.error('削除エラー:', error);
+      alert('食品の削除に失敗しました');
+    }
+  };
+
+  // 認証読み込み中
+  if (authLoading) {
+    return (
+      <div className="app">
+        <div className="loading">初期化中...</div>
+      </div>
+    );
+  }
+
+  // ログインしていない場合
+  if (!user) {
+    return (
+      <div className="app">
+        <Auth user={user} onAuthChange={setUser} />
+      </div>
+    );
+  }
+
+  // データ読み込み中
   if (loading) {
     return (
       <div className="app">
-        <div className="loading">読み込み中...</div>
+        <header className="app-header">
+          <h1>🍱 食品期限管理</h1>
+          <p className="app-subtitle">賞味期限・消費期限をかんたん管理</p>
+        </header>
+        <div className="loading">データを読み込み中...</div>
       </div>
     );
   }
@@ -52,6 +124,12 @@ function App() {
       </header>
 
       <main className="app-main">
+        {/* 認証情報とグループ設定 */}
+        <section className="section">
+          <Auth user={user} onAuthChange={setUser} />
+          <GroupSettings groupId={groupId} onGroupIdChange={handleGroupIdChange} />
+        </section>
+
         {/* 通知バナー */}
         <NotificationBanner expiringItems={expiringItems} days={7} />
 
@@ -60,7 +138,7 @@ function App() {
           <div className="section-header">
             <h2>登録済み食品（{items.length}件）</h2>
           </div>
-          <FoodList items={items} onEdit={handleEdit} onDelete={deleteItem} />
+          <FoodList items={items} onEdit={handleEdit} onDelete={handleDelete} />
         </section>
 
         {/* 食品登録・編集フォーム */}

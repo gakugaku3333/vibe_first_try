@@ -637,3 +637,239 @@
     flex-direction: row;
   }
 }
+
+/* ========================================
+   Firebase認証関連
+   ======================================== */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-card {
+  background: white;
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.login-card h2 {
+  margin: 0 0 0.5rem;
+  color: #2d3748;
+  font-size: 2rem;
+}
+
+.login-description {
+  color: #718096;
+  margin: 0 0 2rem;
+  line-height: 1.6;
+}
+
+.btn-google {
+  background: white;
+  color: #2d3748;
+  border: 2px solid #e2e8f0;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-google:hover {
+  border-color: #cbd5e0;
+  background: #f7fafc;
+}
+
+.login-hint {
+  margin: 1.5rem 0 0;
+  font-size: 0.85rem;
+  color: #a0aec0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-details {
+  flex: 1;
+  text-align: left;
+}
+
+.user-name {
+  margin: 0;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.user-email {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.btn-logout {
+  white-space: nowrap;
+}
+
+.error-message {
+  color: #e53e3e;
+  background: #fff5f5;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* ========================================
+   グループ設定関連
+   ======================================== */
+.group-settings-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  margin-top: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.group-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.group-label {
+  font-size: 0.9rem;
+  color: #718096;
+  white-space: nowrap;
+}
+
+.group-id {
+  background: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #667eea;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.btn-copy {
+  min-width: 36px;
+}
+
+.group-settings-panel {
+  padding: 1.5rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.group-settings-panel h3 {
+  margin: 0 0 0.5rem;
+  color: #2d3748;
+  font-size: 1.2rem;
+}
+
+.group-description {
+  color: #718096;
+  margin: 0 0 1.5rem;
+  font-size: 0.9rem;
+}
+
+.input-with-button {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input-with-button input {
+  flex: 1;
+}
+
+.hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: #a0aec0;
+}
+
+.group-settings-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.group-settings-info {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.group-settings-info h4 {
+  margin: 0 0 0.75rem;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.group-settings-info ol {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #4a5568;
+}
+
+.group-settings-info li {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 500px) {
+  .group-settings-compact {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .group-info {
+    flex-wrap: wrap;
+  }
+}
