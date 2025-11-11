@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
-import Tesseract from 'tesseract.js';
 import type { ExpiryType } from '../types';
-import { extractBestDate, extractExpiryType, formatOCRResult } from '../utils/ocrUtils';
+import { getVisionModel } from '../lib/gemini';
 
 interface OCRResult {
   date: string | null;
@@ -15,8 +14,25 @@ interface OCRScannerProps {
 }
 
 /**
+ * ファイルをBase64文字列に変換
+ */
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      // data:image/jpeg;base64, の部分を除去
+      const base64Data = base64.split(',')[1];
+      resolve(base64Data);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
+/**
  * OCRスキャナーコンポーネント
- * 画像から期限日と期限の種類を自動抽出
+ * Gemini AIで画像から期限日と期限の種類を自動抽出
  */
 export const OCRScanner: React.FC<OCRScannerProps> = ({ onResult, onClose }) => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -27,7 +43,7 @@ export const OCRScanner: React.FC<OCRScannerProps> = ({ onResult, onClose }) => 
 
   const processImage = async (file: File) => {
     setIsProcessing(true);
-    setProgress(0);
+    setProgress(30);
     setDebugText('');
 
     // プレビュー画像を表示
@@ -35,31 +51,87 @@ export const OCRScanner: React.FC<OCRScannerProps> = ({ onResult, onClose }) => 
     setPreviewUrl(url);
 
     try {
-      // Tesseract.jsでOCR実行
-      const result = await Tesseract.recognize(file, 'jpn', {
-        logger: (m) => {
-          if (m.status === 'recognizing text') {
-            setProgress(Math.round(m.progress * 100));
+      // Gemini Vision モデルを取得
+      const model = getVisionModel();
+
+      setProgress(50);
+
+      // 画像をBase64に変換
+      const base64Image = await fileToBase64(file);
+
+      setProgress(70);
+
+      // Geminiに画像解析を依頼
+      const prompt = `この食品ラベルの画像から以下の情報を抽出してください：
+
+1. 賞味期限または消費期限の日付
+2. 期限の種類（「賞味期限」または「消費期限」）
+
+【重要】
+- 日付は YYYY-MM-DD 形式で返してください
+- 年が2桁の場合は20XXとして解釈してください
+- 日付が見つからない場合は null を返してください
+- 期限の種類が明記されていない場合は「賞味期限」としてください
+
+必ず以下のJSON形式で回答してください（他の説明は不要）：
+{"date": "YYYY-MM-DD", "expiryType": "賞味期限" or "消費期限", "rawText": "画像から読み取ったテキスト全体"}
+
+例：
+{"date": "2024-12-31", "expiryType": "賞味期限", "rawText": "賞味期限 2024年12月31日"}`;
+
+      const result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            mimeType: file.type,
+            data: base64Image
           }
-        },
-      });
+        }
+      ]);
 
-      const text = result.data.text;
-      setDebugText(formatOCRResult(text));
+      setProgress(90);
 
-      // 日付と期限の種類を抽出
-      const date = extractBestDate(text);
-      const expiryType = extractExpiryType(text);
+      const response = await result.response;
+      const text = response.text();
+
+      setDebugText(`Gemini Response:\n${text}`);
+
+      // JSONレスポンスをパース
+      let parsedData: { date: string | null; expiryType: ExpiryType | null; rawText: string };
+
+      try {
+        // JSON部分を抽出（マークダウンのコードブロックを除去）
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          parsedData = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error('JSON形式のレスポンスが見つかりません');
+        }
+      } catch (parseError) {
+        console.error('JSON parse error:', parseError);
+        // パースに失敗した場合はnullを返す
+        parsedData = {
+          date: null,
+          expiryType: null,
+          rawText: text,
+        };
+      }
+
+      setProgress(100);
 
       // 結果を親コンポーネントに渡す
       onResult({
-        date,
-        expiryType,
-        rawText: text,
+        date: parsedData.date,
+        expiryType: parsedData.expiryType,
+        rawText: parsedData.rawText || text,
       });
     } catch (error) {
-      console.error('OCR処理エラー:', error);
-      alert('画像の読み取りに失敗しました。もう一度お試しください。');
+      console.error('画像解析エラー:', error);
+      if (error instanceof Error && error.message.includes('Gemini API is not initialized')) {
+        alert('Gemini APIキーが設定されていません。環境変数 VITE_GEMINI_API_KEY を設定してください。');
+      } else {
+        alert('画像の読み取りに失敗しました。もう一度お試しください。');
+      }
     } finally {
       setIsProcessing(false);
       setProgress(0);
